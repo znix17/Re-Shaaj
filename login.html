@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re-Shaaj - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, rgba(207, 178, 214, 1), #c79cc5ff); /* Ombre pastel green gradient */
+            color: #001408ff; /* Dark green text */
+        }
+        .container {
+            background: rgba(187, 216, 189, 0.88); /* Slight white overlay for contrast */
+            padding: 2.5rem;
+            border-radius: 5px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 400%;
+            max-width: 800px;
+            text-align: center;
+        }
+        .logo-container {
+            background: rgba(233, 245, 233, 1); /* Light ombre overlay */
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border: 2px solid #506653ff; /* Subtle border for elevation */
+        }
+        h1 {
+            color: #2e5b3a;
+            font-size: 3rem; /* Elevated size */
+            font-weight: 600; /* Bold for prominence */
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for elevation */
+        }
+        .motto {
+            color: #4a7154; /* Darker green for motto */
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        label {
+            display: block;
+            color: #2e5b3a;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #c1d9c4; /* Deeper pastel green border */
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            background: #f0f7f0; /* Very light pastel green background */
+            color: #2e5b3a;
+            transition: border-color 0.3s ease;
+        }
+        input:focus {
+            border-color: #5c8d67; /* Dark green on focus */
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 0.9rem;
+            background-color: #5c8d67; /* Dark green button */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #4a7154; /* Slightly lighter dark green on hover */
+        }
+        .flash {
+            padding: 0.75rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .flash.success {
+            background-color: #e9f5e9; /* Light pastel green for success */
+            color: #2e5b3a;
+        }
+        .flash.error {
+            background-color: #e8d4d4; /* Soft red for error, contrasting pastel */
+            color: #8a3d3d;
+        }
+        a {
+            color: #5c8d67;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: #4a7154;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <h1>Re-Shaaj</h1>
+            <div class="motto">Sustainable shaaj-goj now at your fingertips!</div>
+        </div>
+        <h2>Login</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="post">
+            <div class="form-group">
+                <label for="user_name">Username</label>
+                <input type="text" id="user_name" name="user_name" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .profile-container { max-width: 800px; margin: auto; }
+        .profile-picture { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; }
+        .product-image { width: 100px; height: 100px; object-fit: cover; }
+        .listings, .review-list { margin-top: 20px; }
+        .product-item, .review-item { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
+        .profile-link { color: blue; text-decoration: none; }
+        .flash-messages { margin-bottom: 20px; }
+        .flash-error { color: red; }
+        .flash-success { color: green; }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <h1>{{ user_name }}</h1>
+
+        <div class="navigation">
+            <a href="{{ url_for('home') }}">Home</a> | 
+            <a href="{{ url_for('dashboard') }}">Dashboard</a> | 
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <p class="flash-{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="profile-info">
+            <div class="profile-picture-container">
+                {% if profile_picture %}
+                    <img src="{{ url_for('static', filename=profile_picture) }}" alt="Profile Picture" class="profile-picture">
+                {% else %}
+                    <img src="{{ url_for('static', filename='default_profile.jpg') }}" alt="Profile Picture" class="profile-picture">
+                {% endif %}
+            </div>
+            <p>Bio: {{ bio if bio else 'No bio provided' }}</p>
+            <p>Join Date: {{ join_date if join_date else 'Not available' }}</p>
+            <p>Seller: {{ 'Yes' if is_seller else 'No' }}</p>
+            <p>Average Rating: {{ '%.1f' | format(average_rating) }}/5.0</p>
+            <p>Active Listings: {{ listing_count }}</p>
+        </div>
+
+        <div class="listings">
+            <h2>Listings</h2>
+            <p><strong>View Listings</strong></p>
+            {% if is_seller and products %}
+                <div class="product-list">
+                    {% for product in products %}
+                        <div class="product-item">
+                            {% if product[5] %}
+                                <img src="{{ url_for('static', filename=product[5]) }}" alt="{{ product[1] }}" class="product-image">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='default_product.jpg') }}" alt="{{ product[1] }}" class="product-image">
+                            {% endif %}
+                            <p>{{ product[1] }}</p>
+                            <p>Price: BDT {{ '%.2f' | format(product[2]) }}</p>
+                            <p>Category: {{ product[3] }}</p>
+                            <p>Condition: {{ product[4] }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>This user has nothing listed yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="review-list">
+            <h2>Ratings and Reviews</h2>
+            {% if is_seller and reviews %}
+                <div class="review-list">
+                    {% for review in reviews %}
+                        <div class="review-item">
+                            <p>Reviewer: 
+                                {% if review[0] %}
+                                    <a href="{{ url_for('profile', username=review[0]) }}" class="profile-link">{{ review[0] }}</a>
+                                {% else %}
+                                    Anonymous
+                                {% endif %}
+                            </p>
+                            <p>Rating: {{ '%.1f' | format(review[1]) }}/5.0</p>
+                            <p>Review: {{ review[2] if review[2] else 'No comment provided' }}</p>
+                            <p>Posted: {{ review[3] if review[3] else 'Unknown' }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>This user is not a seller or has no reviews yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

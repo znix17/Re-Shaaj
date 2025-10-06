@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re-Shaaj - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Re-Shaaj, {{ user_name }}!</h1>
+
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a> | 
+            <a href="{{ url_for('dashboard') }}">Dashboard</a> | 
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="flash {{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('home') }}">
+            <div class="form-group">
+                <label for="search">Search Products:</label>
+                <input type="text" id="search" name="search" placeholder="Search by title, category, or seller...">
+                <button type="submit">Search</button>
+            </div>
+        </form>
+
+        <h2>Available Products</h2>
+        {% if products %}
+            <div class="product-list">
+                {% for product in products %}
+                    <div class="product-item">
+                        <img src="{{ url_for('static', filename='uploads/' + (product[8] if product[8] else 'default_product.png')) }}" alt="{{ product[1] }}" class="product-image">
+                        <h4>{{ product[1] }}</h4>
+                        <p>Price: BDT {{ '%.2f' | format(product[2]) }}</p>
+                        <p>Category: {{ product[3] }}</p>
+                        <p>Condition: {{ product[4] }}</p>
+                        <p>Seller: <a href="{{ url_for('profile', username=product[5]) }}" class="profile-link">{{ product[5] }}</a></p>
+                        
+                        {% if product[7] %}
+                            <p class="sold">Sold</p>
+                        {% elif product[6] != user_id %}
+                            <form method="POST" action="{{ url_for('add_to_cart', product_id=product[0]) }}">
+                                <button type="submit">Add to Cart</button>
+                            
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No products available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
